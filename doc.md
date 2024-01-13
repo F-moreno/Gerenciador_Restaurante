@@ -12,12 +12,12 @@ A automação dos processos em restaurantes é crucial para otimizar a eficiênc
 ## Objetivos 
 
 ### Objetivos Gerais:
-Desenvolver um sistema completo de gestão para restaurantes, integrando funções de atendimento, administração e controle de estoque.
+Desenvolver um sistema completo de gestão para restaurantes, integrando funções de atendimento e administração.
 
 ### Objetivos Específicos:
 
 Implementar classes de herança para representar entidades como Pessoa, Funcionário, Cliente e Dependentes.
-Desenvolver um módulo de atendimento ao cliente que inclua pedidos, reservas e feedbacks.
+Desenvolver um módulo de atendimento ao cliente que inclua pedidos e reservas.
 Criar funcionalidades administrativas para gerenciamento de funcionários, estoque e finanças.
 Realizar levantamento de requisitos para identificar necessidades específicas do restaurante.
 Realizar modelagem do sistema para definir a estrutura das classes e a interação entre os módulos.
@@ -29,7 +29,6 @@ Validar o sistema por meio de testes abrangentes, garantindo sua eficácia e con
 ### Levantamento de Requisitos:
 
 Identificar as necessidades do restaurante em termos de atendimento, administração e controle operacional.
-Entrevistar funcionários e clientes para entender expectativas e requisitos específicos.
 
 ### Modelagem:
 
@@ -44,5 +43,5 @@ Utilizar boas práticas de programação para garantir a qualidade do código.
 ### Validação:
 
 Realizar testes unitários e de integração para validar o funcionamento de cada módulo.
-Envolver usuários-chave em testes de aceitação para garantir a usabilidade e adequação às necessidades do restaurante.
+
 Ao implementar este projeto, espera-se fornecer ao restaurante uma solução eficaz para gerenciamento e aprimoramento de suas operações, resultando em uma experiência aprimorada tanto para os clientes quanto para a equipe interna.
