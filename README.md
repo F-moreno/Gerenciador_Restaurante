@@ -31,10 +31,34 @@ Validar o sistema por meio de testes abrangentes, garantindo sua eficácia e con
 
 Identificar as necessidades do restaurante em termos de atendimento, administração e controle operacional.
 
+```Pessoa```: Existe a necessidade da criação de uma classe generica para armazenar os dados pessoais dos clientes,funcionarios e dependentes. Com a finalidade de economia e reaproveitamento de código.
+
+```Dependente```: O sistema deve possuir um controle para dependentes, esta informação pode ser útil ao decorrer da vida útil do sistema, informações pertinentes a recursos humanos devem ser armazenadas. cada dependente será associado a apenas um unico funcionário, entretanto um funcionario deve poder possuir diversos dependentes. Cada dependente tambem deve armazenar o tipo de parentesco.
+
+```Funcionario```: Existe a necessidade da criação de uma classe para armazenar dados genericos pertinentes a todos os funcionarios independente dos cargos, para evitar uma repetição de código e facilitar futuras manutenções.
+
+```Recepcionista```: Esta classe deve possuir metodos para criar e verificar reservas e abrir ,fechar e ocupar mesas.
+
+```Cozinheiro```: Esta classe deve ser responsavel por finalizar comandas e associar seu id a elas.
+
+```Garcon```: Esta classe é responsavel por abrir as comandas associando seu id a elas.
+
+```Cliente```: No momento o cliente nao interage com o sistema, assim sendo esta classe deve somente armazer o id e definir pessoas como clientes para utilização das outras classes.
+
+```Reserva```: Esta classe representa as reservas contendo data e referencia de mesa e cliente associado.
+
+```Mesa```: Essa classe represeta o objeto responsavel por indicar o consumo total da mesa, e ao ser finalizada deve invocar a classe Venda para finalizar o consumo. deve tambem permitir que o garçom insira comandas a ela.
+
+
+
 ### Modelagem:
 
 Utilizar diagramas UML para modelar a estrutura das classes, suas relações e os fluxos de processos no sistema.
 Definir os atributos e métodos essenciais para cada classe, levando em consideração a hierarquia de herança.
+```Pessoa```:
+>Atributos:
+> - identificador
+> - identificador do funcionário associado
 
 ### Implementação:
 
