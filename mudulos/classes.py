@@ -14,10 +14,7 @@
 # nomeComposto : function
 # nome_composto : variavel
 class Pessoa:
-    id = 1
-
     def __init__(self, categoria: str, nome: str, telefone: str, email: str) -> None:
-        self.id, Pessoa.id = Pessoa.id, Pessoa.id + 1
         self.nome = nome
         self.telefone = telefone
         self.email = email
@@ -37,17 +34,29 @@ class Pessoa:
 
 
 class Cliente(Pessoa):
-    """Classe Cliente extende a classe Pessoa"""
+    """{categoria: str = 'Cliente',
+    nome: str,
+    telefone: str,
+    email: str}"""
+
+    id = 1
 
     def __init__(self, *args) -> None:
         super().__init__("Cliente", *args)
+        self.id, Cliente.id = Cliente.id, Cliente.id + 1
 
 
 class Funcionario(Pessoa):
-    """Classe Funcionario extende a classe Pessoa"""
+    """{categoria: str = 'Funcionario',
+    nome: str,
+    telefone: str,
+    email: str}"""
+
+    id = 1
 
     def __init__(self, *args) -> None:
-        super().__init__("Funcionario", *args)
+        super().__init__("Funcionário", *args)
+        self.id, Funcionario.id = Funcionario.id, Funcionario.id + 1
 
     def definirSalario(self, salario: float) -> None:
         """Redefine salario do funcionário."""
@@ -59,8 +68,18 @@ class Funcionario(Pessoa):
 
 
 class Dependente(Pessoa):
+    """{responsavel: Funcionario,
+    parentesco:str,
+    categoria: str = 'Dependente',
+    nome: str,
+    telefone: str,
+    email: str}"""
+
+    id = 1
+
     def __init__(self, responsavel: Funcionario, parentesco: str, *args) -> None:
         super().__init__("Dependente", *args)
+        self.id, Dependente.id = Dependente.id, Dependente.id + 1
         self.responsavel = responsavel
         self.parentesco = parentesco
 
@@ -69,10 +88,34 @@ class Dependente(Pessoa):
 
 
 class Recepcionista(Funcionario):
-    def __init__(self, *args) -> None:
-        super().__init__(*args)
+    """{categoria: str = 'Recepcionista',
+    nome: str,
+    telefone: str,
+    email: str}"""
 
-    def fazerReserva(self,cliente:Cliente,mesa: Mesa, data:str):
+    id = 1
+
+    def __init__(self, *args) -> None:
+        super().__init__("Recepcionista", *args)
+
+    def ocuparMesa(self, cliente: Cliente, mesa: Mesa, data: str):
+        pass
+
+
+class Cozinheiro(Funcionario):
+    def __init__(self, *args) -> None:
+        super().__init__("Cozinheiro", *args)
+
+    def fecharComanda(self, id_comanda: int):
+        pass
+
+
+class Garcon(Funcionario):
+    def __init__(self, *args) -> None:
+        super().__init__("Garçon", *args)
+
+    def abrirComanda(self, cliente: Cliente, mesa: Mesa, data: str):
+        pass
 
 
 if __name__ == "__main__":
