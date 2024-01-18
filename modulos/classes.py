@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Aqui serão Implementadas todas as classes do sistema"""
 
 
@@ -98,24 +100,120 @@ class Recepcionista(Funcionario):
     def __init__(self, *args) -> None:
         super().__init__("Recepcionista", *args)
 
-    def ocuparMesa(self, cliente: Cliente, mesa: Mesa, data: str):
-        pass
-
 
 class Cozinheiro(Funcionario):
+    """{categoria: str = 'Cozinheiro',
+    nome: str,
+    telefone: str,
+    email: str}"""
+
+    id = 1
+
     def __init__(self, *args) -> None:
         super().__init__("Cozinheiro", *args)
-
-    def fecharComanda(self, id_comanda: int):
-        pass
+        self.id, Cozinheiro.id = Cozinheiro.id, Cozinheiro.id + 1
 
 
 class Garcon(Funcionario):
+    """{categoria: str = 'Garcon',
+    nome: str,
+    telefone: str,
+    email: str}"""
+
+    id = 1
+
     def __init__(self, *args) -> None:
         super().__init__("Garçon", *args)
+        self.id, Garcon.id = Garcon.id, Garcon.id + 1
 
-    def abrirComanda(self, cliente: Cliente, mesa: Mesa, data: str):
-        pass
+
+class Reserva:
+    id = 1
+
+    def __init__(
+        self,
+        recepicionista: Recepcionista,
+        mesa: Mesa,
+        cliente: Cliente,
+        data: str,
+        hora: str,
+    ) -> None:
+        self.id, Reserva.id = Reserva.id, Reserva.id + 1
+        self.recepicionista = recepicionista
+        self.mesa = mesa
+        self.cliente = cliente
+        self.data = data
+        self.hora = hora
+        self.status = "Aberto"
+
+    def cancelarReserva(self) -> None:
+        self.status = "Cancelado"
+
+    def finalizarReserva(self) -> None:
+        self.status = "Finalizado"
+
+
+class Mesa:
+    id = 1
+
+    def __init__(self, capacidade: int) -> None:
+        self.id, Mesa.id = Mesa.id, Mesa.id + 1
+        self.capacidade = capacidade
+        self.status = "Vazia"
+        self.comanda = []
+        self.cliente = None
+
+    def inserirCliente(self, cliente: Cliente):
+        self.cliente = cliente
+        self.status = "Ocupado"
+
+    def inserirComanda(self, comanda: Comanda):
+        self.comanda.append(comanda)
+
+    def inativarMesa(self):
+        if self.status == "Ocupado":
+            raise ValueError("Não é possivel inativar uma mesa ocupada!")
+        self.status = "Inativo"
+
+    def finalizarMesa(self):
+        return Conta(self.comanda)
+
+
+class Comanda:
+    id = 1
+
+    def __init__(self, garcon: Garcon):
+        self.garcon = garcon
+        self.cozinheiro = None
+        self.itemPedido = []
+        self.status = "Aberta"
+        self.total = 0
+
+    def abrirComanda(self, prato, quantidade):
+        self.itemPedido(ItemPedido(prato, quantidade))
+
+    def fecharComanda(self, cozinheiro: Cozinheiro):
+        self.cozinheiro = cozinheiro
+        self.status = "Finalizada"
+        for i in self.itemPedido:
+            self.total += i.subtotal
+
+
+class ItemPedido:
+    def __init__(self, prato: Prato, quantidade: int):
+        self.prato = prato
+        self.quantidade = quantidade
+        self.sub_total = quantidade * prato.valor
+
+
+class Prato:
+    id = 1
+
+    def __init__(self, nome: str, valor: float, descricao: str):
+        self.id, Prato.id = Prato.id, Prato.id + 1
+        self.nome = nome
+        self.valor = valor
+        self.descricao = descricao
 
 
 if __name__ == "__main__":
