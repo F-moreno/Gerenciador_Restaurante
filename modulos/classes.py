@@ -183,6 +183,7 @@ class Comanda:
     id = 1
 
     def __init__(self, garcon: Garcon):
+        self.id, Comanda.id = Comanda.id, Comanda.id + 1
         self.garcon = garcon
         self.cozinheiro = None
         self.itemPedido = []
