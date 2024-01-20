@@ -26,7 +26,11 @@ def carregaMesas():
 
 @st.cache_data
 def carregaClientes():
-    clientes = [Cliente("Fernando", "12345", "email")]
+    df = pd.read_csv(r"modulos/dados/clientes.csv", index_col=0)
+
+    # Criar instâncias de Cliente a partir das linhas do DataFrame
+    clientes = [Cliente(**cliente) for _, cliente in df.iterrows()]
+
     return clientes
 
 
@@ -35,8 +39,10 @@ def main():
     clientes = carregaClientes()
 
     logo = Image.open(r"img/logo.png")
-    col1, col2 = st.columns([0.8, 0.2])
-    with col1:  # To display the header text using css style
+    col1, col2 = st.columns((1, 4))
+    with col1:  # To display brand log
+        st.image(logo, width=130)
+    with col2:  # To display the header text using css style
         st.markdown(
             """ <style> .font {
         font-size:35px ; font-family: 'Cooper Black'; color: #FF9633;} 
@@ -47,8 +53,6 @@ def main():
             '<p class="font">"La Cucina di Marcotti"</p>', unsafe_allow_html=True
         )
         st.write("Cucina Italiana.")
-    with col2:  # To display brand log
-        st.image(logo, width=130)
 
     with st.sidebar:
         opcao = option_menu(
@@ -88,14 +92,25 @@ def main():
         st.subheader("Salão")
         for mesa in mesas:
             if st.button(f"Mesa: {mesa.id} {mesa.status}"):
-                mesa.inserirCliente(clientes[0])
-                st.success(f"Cliente inserido na Mesa {mesa.id}")
+                with st.form(
+                    key="columns_in_form2", clear_on_submit=True
+                ):  # set clear_on_submit=True so that the form will be reset/cleared once it's submitted
+                    # st.write('Please help us improve!')
+                    id_cliente = st.text_input(
+                        label="Id Cliente"
+                    )  # Collect user feedback
+                    submitted = st.form_submit_button("Submit")
+                    if submitted:
+                        st.write(
+                            "Thanks for your contacting us. We will respond to your questions or inquiries as soon as possible!"
+                        )
+                        mesa.inserirCliente()
 
     def Relatorio():
         # Permite gerar um relatorio a partir do banco de clientes
-        df = pd.read_csv(r"modulos/dados/clientes.csv")
-        df_head = df.head(30)
 
+        df_head = pd.DataFrame([vars(cliente) for cliente in clientes[:30]])
+        # cria botao que quando clicado carrega os dados em df_head na tela
         if st.button("Check Results", key="1"):
             st.write(df_head)
         else:
