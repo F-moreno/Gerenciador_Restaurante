@@ -8,7 +8,6 @@ import numpy as np
 import pandas as pd
 import io
 
-
 @st.cache_data
 def carregaMesas():
     mesas = [
@@ -114,18 +113,14 @@ def main():
         for mesa in mesas:
             if st.button(f"Mesa: {mesa.id} {mesa.status}"):
                 with st.form(
-                    key="columns_in_form2", clear_on_submit=True
+                    key=f"form_mesa_{mesa.id}", clear_on_submit=True
                 ):  # set clear_on_submit=True so that the form will be reset/cleared once it's submitted
                     # st.write('Please help us improve!')
-                    id_cliente = st.text_input(
-                        label="Id Cliente"
-                    )  # Collect user feedback
-                    submitted = st.form_submit_button("Submit")
+                    id_cliente = st.text_input(label="Id Cliente", key=f"id_cliente_{mesa.id}")  # Collect user feedback
+                    submitted = st.form_submit_button("Inserir Cliente")
                     if submitted:
-                        st.write(
-                            "Thanks for your contacting us. We will respond to your questions or inquiries as soon as possible!"
-                        )
-                        mesa.inserirCliente()
+                        mesa.inserirCliente(id_cliente)
+                        st.success(f"Cliente {id_cliente} inserido na Mesa {mesa.id}")
 
     def Relatorio():
         # Permite gerar um relatorio a partir do banco de clientes
@@ -134,6 +129,7 @@ def main():
         # cria botao que quando clicado carrega os dados em df_head na tela
         if st.button("Clientes", key="1"):
             st.write(clientes)
+            select=clientes
         else:
             st.write("---")
 
@@ -148,18 +144,11 @@ def main():
             # Juntando os DataFrames usando merge e ajustando o índice
             resultado = pd.merge(top3_clientes, contagem_reservas, how='left', left_on='Id', right_index=True)
 
-            # Preenchendo valores NaN com 0, caso algum cliente não tenha reservas
-            resultado['Contagem de Reservas'] = resultado['IdCliente'].fillna(0).astype(int)
 
-            # Removendo a coluna 'IdCliente' que não é mais necessária
-            resultado = resultado.drop(columns=['IdCliente'])
-
-            # Renomeando as colunas
-            resultado.columns = ['Nome', 'Contagem de Reservas']
 
             # Mostrando o resultado
             st.write(resultado)
-
+            select=reservas
 
         else:
             st.write("---")
@@ -167,7 +156,7 @@ def main():
         import io
 
         buffer = io.StringIO()
-        df.info(buf=buffer)
+        select.info(buf=buffer)
         s = buffer.getvalue()
         if st.button("Check Results", key="3"):
             st.text(s)

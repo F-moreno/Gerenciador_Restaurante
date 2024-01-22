@@ -157,11 +157,11 @@ class Mesa:
         self.capacidade = capacidade
         self.status = "Vazia"
         self.comanda = []
-        self.cliente = None
+        self.id_cliente = None
         self.conta = 0
 
-    def inserirCliente(self, cliente: Cliente):
-        self.cliente = cliente
+    def inserirCliente(self, id_cliente: int):
+        self.id_cliente = id_cliente
         self.status = "Ocupado"
 
     def inserirComanda(self, comanda: Comanda):
