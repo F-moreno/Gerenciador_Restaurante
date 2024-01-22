@@ -16,9 +16,21 @@ def carregaMesas():
         Mesa(4),
         Mesa(4),
         Mesa(4),
+        Mesa(4),
+        Mesa(4),
+        Mesa(4),
+        Mesa(4),
+        Mesa(4),
+        Mesa(4),
         Mesa(6),
         Mesa(6),
         Mesa(6),
+        Mesa(6),
+        Mesa(6),
+        Mesa(6),
+        Mesa(8),
+        Mesa(8),
+        Mesa(8),
         Mesa(8),
     ]
     return mesas
@@ -26,19 +38,28 @@ def carregaMesas():
 
 @st.cache_data
 def carregaClientes():
-    df = pd.read_csv(r"modulos/dados/clientes.csv", index_col=0)
+    df = pd.read_csv("modulos/dados/clientes.csv")
+    
+    # Criar instâncias de Cliente a partir das linhas do DataFrame
+    #clientes = [Cliente(**cliente) for _, cliente in df.iterrows()]
+
+    return df
+
+@st.cache_data
+def carregaReservas():
+    df = pd.read_csv(r"modulos/dados/reservas.csv")
 
     # Criar instâncias de Cliente a partir das linhas do DataFrame
-    clientes = [Cliente(**cliente) for _, cliente in df.iterrows()]
+    #reservas = [Reserva(**reserva) for _, reserva in df.iterrows()]
 
-    return clientes
-
+    return df
 
 def main():
     mesas = carregaMesas()
     clientes = carregaClientes()
+    reservas= carregaReservas()
 
-    logo = Image.open(r"img/logo.png")
+    logo = Image.open(r"modulos/img/logo.png")
     col1, col2 = st.columns((1, 4))
     with col1:  # To display brand log
         st.image(logo, width=130)
@@ -109,13 +130,39 @@ def main():
     def Relatorio():
         # Permite gerar um relatorio a partir do banco de clientes
 
-        df_head = pd.DataFrame([vars(cliente) for cliente in clientes[:30]])
+    
         # cria botao que quando clicado carrega os dados em df_head na tela
-        if st.button("Check Results", key="1"):
-            st.write(df_head)
+        if st.button("Clientes", key="1"):
+            st.write(clientes)
         else:
             st.write("---")
 
+        #Gera relatorio de reservas a partir do banco de reservas
+        #df_reservas = pd.DataFrame([vars(reserva) for reserva in reservas[:999]])
+        if st.button("Reservas", key="2"):
+
+            top3=reservas['IdCliente'].value_counts().head(3)
+            top3_clientes = clientes[clientes['Id'].isin(top3)]
+            contagem_reservas = reservas[reservas['IdCliente'].isin(top3)]['IdCliente'].value_counts()
+
+            # Juntando os DataFrames usando merge e ajustando o índice
+            resultado = pd.merge(top3_clientes, contagem_reservas, how='left', left_on='Id', right_index=True)
+
+            # Preenchendo valores NaN com 0, caso algum cliente não tenha reservas
+            resultado['Contagem de Reservas'] = resultado['IdCliente'].fillna(0).astype(int)
+
+            # Removendo a coluna 'IdCliente' que não é mais necessária
+            resultado = resultado.drop(columns=['IdCliente'])
+
+            # Renomeando as colunas
+            resultado.columns = ['Nome', 'Contagem de Reservas']
+
+            # Mostrando o resultado
+            st.write(resultado)
+
+
+        else:
+            st.write("---")
         # Allow users to check the results of the third code snippet by clicking the 'Check Results' button
         import io
 

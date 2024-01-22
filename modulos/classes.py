@@ -56,9 +56,10 @@ class Funcionario(Pessoa):
 
     id = 1
 
-    def __init__(self, *args) -> None:
+    def __init__(self,funcao, *args) -> None:
         super().__init__("Funcionário", *args)
         self.id, Funcionario.id = Funcionario.id, Funcionario.id + 1
+        self.funcao = funcao
 
     def definirSalario(self, salario: float) -> None:
         """Redefine salario do funcionário."""
@@ -67,6 +68,9 @@ class Funcionario(Pessoa):
     def definirAdmissao(self, data_admissao: float) -> None:
         """Define data de admissão do funcionário"""
         self.salario = data_admissao
+
+    def __str__(self):
+        return super().__str__()+f" Função: {self.funcao}"
 
 
 class Dependente(Pessoa):
@@ -79,14 +83,14 @@ class Dependente(Pessoa):
 
     id = 1
 
-    def __init__(self, responsavel: Funcionario, parentesco: str, *args) -> None:
+    def __init__(self, id_responsavel: int, parentesco: str, *args) -> None:
         super().__init__("Dependente", *args)
         self.id, Dependente.id = Dependente.id, Dependente.id + 1
-        self.responsavel = responsavel
+        self.id_responsavel = id_responsavel
         self.parentesco = parentesco
 
     def __str__(self):
-        return f"Meu nome é {self.nome} e sou {self.categoria} do funcionario {getattr(self.responsavel, 'nome')} deste Restaurante."
+        return f"Meu nome é {self.nome} e sou {self.categoria} do funcionario id:{self.id_responsavel} deste Restaurante."
 
 
 class Recepcionista(Funcionario):
@@ -94,9 +98,6 @@ class Recepcionista(Funcionario):
     nome: str,
     telefone: str,
     email: str}"""
-
-    id = 1
-
     def __init__(self, *args) -> None:
         super().__init__("Recepcionista", *args)
 
@@ -107,11 +108,8 @@ class Cozinheiro(Funcionario):
     telefone: str,
     email: str}"""
 
-    id = 1
-
     def __init__(self, *args) -> None:
         super().__init__("Cozinheiro", *args)
-        self.id, Cozinheiro.id = Cozinheiro.id, Cozinheiro.id + 1
 
 
 class Garcon(Funcionario):
@@ -120,11 +118,9 @@ class Garcon(Funcionario):
     telefone: str,
     email: str}"""
 
-    id = 1
 
     def __init__(self, *args) -> None:
         super().__init__("Garçon", *args)
-        self.id, Garcon.id = Garcon.id, Garcon.id + 1
 
 
 class Reserva:
@@ -132,16 +128,16 @@ class Reserva:
 
     def __init__(
         self,
-        recepicionista: Recepcionista,
-        mesa: Mesa,
-        cliente: Cliente,
+        id_recepicionista: int,
+        id_mesa: int,
+        id_cliente: int,
         data: str,
         hora: str,
     ) -> None:
         self.id, Reserva.id = Reserva.id, Reserva.id + 1
-        self.recepicionista = recepicionista
-        self.mesa = mesa
-        self.cliente = cliente
+        self.id_recepicionista = id_recepicionista
+        self.id_mesa = id_mesa
+        self.id_cliente = id_cliente
         self.data = data
         self.hora = hora
         self.status = "Aberto"
@@ -162,6 +158,7 @@ class Mesa:
         self.status = "Vazia"
         self.comanda = []
         self.cliente = None
+        self.conta = 0
 
     def inserirCliente(self, cliente: Cliente):
         self.cliente = cliente
@@ -169,6 +166,7 @@ class Mesa:
 
     def inserirComanda(self, comanda: Comanda):
         self.comanda.append(comanda)
+        self.conta += comanda.subtotal
 
     def inativarMesa(self):
         if self.status == "Ocupado":
@@ -182,10 +180,10 @@ class Mesa:
 class Comanda:
     id = 1
 
-    def __init__(self, garcon: Garcon):
+    def __init__(self, id_garcon: int):
         self.id, Comanda.id = Comanda.id, Comanda.id + 1
-        self.garcon = garcon
-        self.cozinheiro = None
+        self.id_garcon = id_garcon
+        self.id_cozinheiro = None
         self.itemPedido = []
         self.status = "Aberta"
         self.total = 0
@@ -193,8 +191,8 @@ class Comanda:
     def abrirComanda(self, prato, quantidade):
         self.itemPedido(ItemPedido(prato, quantidade))
 
-    def fecharComanda(self, cozinheiro: Cozinheiro):
-        self.cozinheiro = cozinheiro
+    def fecharComanda(self, id_cozinheiro: int):
+        self.id_cozinheiro = id_cozinheiro
         self.status = "Finalizada"
         for i in self.itemPedido:
             self.total += i.subtotal
@@ -224,7 +222,7 @@ if __name__ == "__main__":
         "123456789",
         "joao@email.com",
     )
-    funcionario1 = Funcionario(
+    funcionario1 = Recepcionista(
         "Fernando",
         "987654321",
         "fernando@email.com",
