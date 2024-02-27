@@ -1,16 +1,14 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-import streamlit.components.v1 as html
-import time
 from PIL import Image
 from modulos.classes import *
 import numpy as np
 import pandas as pd
 import io
 
-@st.cache_data
-def carregaMesas():
-    mesas = [
+
+if "mesas" not in st.session_state:
+    st.session_state.mesas = [
         Mesa(4),
         Mesa(4),
         Mesa(4),
@@ -32,31 +30,31 @@ def carregaMesas():
         Mesa(8),
         Mesa(8),
     ]
-    return mesas
 
 
 @st.cache_data
 def carregaClientes():
     df = pd.read_csv("modulos/dados/clientes.csv")
-    
+
     # Criar instâncias de Cliente a partir das linhas do DataFrame
-    #clientes = [Cliente(**cliente) for _, cliente in df.iterrows()]
+    # clientes = [Cliente(**cliente) for _, cliente in df.iterrows()]
 
     return df
+
 
 @st.cache_data
 def carregaReservas():
     df = pd.read_csv(r"modulos/dados/reservas.csv")
 
     # Criar instâncias de Cliente a partir das linhas do DataFrame
-    #reservas = [Reserva(**reserva) for _, reserva in df.iterrows()]
+    # reservas = [Reserva(**reserva) for _, reserva in df.iterrows()]
 
     return df
 
+
 def main():
-    mesas = carregaMesas()
     clientes = carregaClientes()
-    reservas= carregaReservas()
+    reservas = carregaReservas()
 
     logo = Image.open(r"modulos/img/logo.png")
     col1, col2 = st.columns((1, 4))
@@ -110,13 +108,15 @@ def main():
 
     def Salao():
         st.subheader("Salão")
-        for mesa in mesas:
+        for mesa in st.session_state.mesas:
             if st.button(f"Mesa: {mesa.id} {mesa.status}"):
                 with st.form(
                     key=f"form_mesa_{mesa.id}", clear_on_submit=True
                 ):  # set clear_on_submit=True so that the form will be reset/cleared once it's submitted
                     # st.write('Please help us improve!')
-                    id_cliente = st.text_input(label="Id Cliente", key=f"id_cliente_{mesa.id}")  # Collect user feedback
+                    id_cliente = st.text_input(
+                        label="Id Cliente", key=f"id_cliente_{mesa.id}"
+                    )  # Collect user feedback
                     submitted = st.form_submit_button("Inserir Cliente")
                     if submitted:
                         mesa.inserirCliente(id_cliente)
@@ -125,30 +125,35 @@ def main():
     def Relatorio():
         # Permite gerar um relatorio a partir do banco de clientes
 
-    
         # cria botao que quando clicado carrega os dados em df_head na tela
         if st.button("Clientes", key="1"):
             st.write(clientes)
-            select=clientes
+            select = clientes
         else:
             st.write("---")
 
-        #Gera relatorio de reservas a partir do banco de reservas
-        #df_reservas = pd.DataFrame([vars(reserva) for reserva in reservas[:999]])
+        # Gera relatorio de reservas a partir do banco de reservas
+        # df_reservas = pd.DataFrame([vars(reserva) for reserva in reservas[:999]])
         if st.button("Reservas", key="2"):
 
-            top3=reservas['IdCliente'].value_counts().head(3)
-            top3_clientes = clientes[clientes['Id'].isin(top3)]
-            contagem_reservas = reservas[reservas['IdCliente'].isin(top3)]['IdCliente'].value_counts()
+            top3 = reservas["IdCliente"].value_counts().head(3)
+            top3_clientes = clientes[clientes["Id"].isin(top3)]
+            contagem_reservas = reservas[reservas["IdCliente"].isin(top3)][
+                "IdCliente"
+            ].value_counts()
 
             # Juntando os DataFrames usando merge e ajustando o índice
-            resultado = pd.merge(top3_clientes, contagem_reservas, how='left', left_on='Id', right_index=True)
-
-
+            resultado = pd.merge(
+                top3_clientes,
+                contagem_reservas,
+                how="left",
+                left_on="Id",
+                right_index=True,
+            )
 
             # Mostrando o resultado
             st.write(resultado)
-            select=reservas
+            select = reservas
 
         else:
             st.write("---")
@@ -198,4 +203,5 @@ def main():
         Sobre()
 
 
-main()
+if __name__ == "__main__":
+    main()
